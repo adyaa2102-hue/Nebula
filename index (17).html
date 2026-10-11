@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nebula — Welcome</title>
+  <style>
+    :root {
+      --sky: #add8e6;
+      --navy: #123b70;
+      --brown: #70452e;
+      --brown-hover: #5b3725;
+      --card: rgba(255,255,255,.48);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 28px 16px;
+      display: grid;
+      place-items: center;
+      background: var(--sky);
+      color: var(--navy);
+      font-family: "Trebuchet MS", Arial, sans-serif;
+    }
+    main {
+      width: min(100%, 680px);
+      text-align: center;
+      padding: clamp(22px, 5vw, 42px);
+      border: 1px solid rgba(18,59,112,.15);
+      border-radius: 22px;
+      background: var(--card);
+      box-shadow: 0 14px 38px rgba(18,59,112,.12);
+    }
+    h1 { margin: 0 0 28px; font-size: clamp(1.8rem, 5vw, 2.5rem); }
+    .field { text-align: left; margin: 18px auto; max-width: 390px; }
+    label { display: block; margin-bottom: 8px; font-weight: 700; }
+    input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 2px solid transparent;
+      border-radius: 9px;
+      background: var(--brown);
+      color: white;
+      font: inherit;
+      outline: none;
+    }
+    input::placeholder { color: #f2e8e2; opacity: .9; }
+    input:focus { border-color: var(--navy); }
+    button {
+      border: 0;
+      border-radius: 9px;
+      padding: 12px 18px;
+      background: var(--brown);
+      color: white;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      margin: 8px 5px;
+    }
+    button:hover { background: var(--brown-hover); }
+    .primary { background: var(--navy); }
+    .primary:hover { background: #0b2b54; }
+    #message { min-height: 1.5em; margin: 14px 0 0; font-weight: 700; }
+    #surprise { display: none; margin-top: 18px; }
+    #surprise video { width: 100%; max-height: 360px; border-radius: 12px; background: #000; }
+    .note { font-size: .85rem; opacity: .8; margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>WELCOME!</h1>
+
+    <div class="field">
+      <label for="username">Username</label>
+      <input id="username" autocomplete="username" placeholder="Enter your username">
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" placeholder="Enter a password">
+    </div>
+
+    <button class="primary" id="showBtn" type="button">Show password</button>
+    <p id="message" aria-live="polite"></p>
+
+    <section id="surprise">
+      <p><strong>Do you want a surprise????</strong></p>
+      <button id="noBtn" type="button">No 🗿</button>
+      <button id="yesBtn" type="button">Yes 🤫</button>
+      <video id="video" controls playsinline preload="metadata" style="display:none">
+        <source src="gui.mp4" type="video/mp4">
+        Your browser does not support HTML video.
+      </video>
+      <p id="videoMessage" class="note"></p>
+    </section>
+
+    <p class="note">Nebula demo · A browser recreation of the Tkinter welcome screen</p>
+  </main>
+
+  <script>
+    const password = document.getElementById('password');
+    const message = document.getElementById('message');
+    const surprise = document.getElementById('surprise');
+    const video = document.getElementById('video');
+    const videoMessage = document.getElementById('videoMessage');
+
+    document.getElementById('showBtn').addEventListener('click', () => {
+      if (!password.value) {
+        message.textContent = 'Please enter a password first.';
+        surprise.style.display = 'none';
+        return;
+      }
+      // Reveal the password only in this browser, instead of printing it on screen.
+      password.type = password.type === 'password' ? 'text' : 'password';
+      document.getElementById('showBtn').textContent =
+        password.type === 'password' ? 'Show password' : 'Hide password';
+      message.textContent = 'Welcome! Want a surprise?';
+      surprise.style.display = 'block';
+    });
+
+    document.getElementById('noBtn').addEventListener('click', () => {
+      video.pause();
+      video.style.display = 'none';
+      videoMessage.textContent = 'Maybe next time! 🗿';
+    });
+
+    document.getElementById('yesBtn').addEventListener('click', async () => {
+      video.style.display = 'block';
+      videoMessage.textContent = '';
+      if (!video.querySelector('source').getAttribute('src')) return;
+      try {
+        await video.play();
+      } catch (e) {
+        videoMessage.textContent = 'Press Play on the video to start it.';
+      }
+    });
+
+    video.addEventListener('error', () => {
+      videoMessage.textContent = 'Video not found. Upload gui.mp4 beside index.html in your repository.';
+    });
+  </script>
+</body>
+</html>
